@@ -134,6 +134,7 @@ with DAG(
         service_account_name="mlops-training",
         get_logs=True,
         is_delete_operator_pod=False,
+        on_finish_action="keep_pod",
     )
 
     (
