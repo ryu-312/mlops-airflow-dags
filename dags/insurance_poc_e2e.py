@@ -104,7 +104,7 @@ with DAG(
     train_model = KubernetesPodOperator(
         task_id="train_model",
         name="insurance-train",
-        namespace="mlops",
+        namespace="airflow",
         image=TRAINING_IMAGE,
         cmds=["python", "train.py"],
         arguments=[
