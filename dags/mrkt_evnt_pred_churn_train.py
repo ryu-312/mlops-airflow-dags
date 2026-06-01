@@ -174,8 +174,7 @@ with DAG(
     dag_id='mrkt_evnt_pred_churn_train',
     default_args=default_args,
     description='mrkt_evnt_pred_churn_train 마트 월별 파티션 재적재',
-    #schedule_interval='0 6 1 * *',   # 매월 1일 오전 6시
-    schedule_interval='None',   # 매월 1일 오전 6시
+    schedule_interval=None,   # 매월 1일 오전 6시
     start_date=datetime(2026, 1, 1),
     catchup=False,
     max_active_runs=1,
