@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from airflow import DAG
-from airflow.providers.amazon.aws.operators.glue import GlueJobOperat\or
+from airflow.providers.amazon.aws.operators.glue import GlueJobOperator
 from airflow.providers.amazon.aws.operators.athena import AthenaOperator
 
 with DAG(
