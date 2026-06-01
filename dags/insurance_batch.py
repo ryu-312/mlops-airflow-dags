@@ -33,7 +33,7 @@ with DAG(
             "AWS_DEFAULT_REGION": "ap-northeast-2",
             "MLFLOW_TRACKING_URI": "http://mlflow.mlflow.svc.cluster.local:80",
             "MLFLOW_TRACKING_USERNAME": "admin",
-            "MLFLOW_TRACKING_PASSWORD": "admin",
+            "MLFLOW_TRACKING_PASSWORD": "Clkyobo11111!",
         },
         service_account_name="mlops-training",
         get_logs=True,
