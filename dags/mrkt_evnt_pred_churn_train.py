@@ -175,7 +175,7 @@ with DAG(
     default_args=default_args,
     description='mrkt_evnt_pred_churn_train 마트 월별 파티션 재적재',
     schedule_interval=None,   # 매월 1일 오전 6시
-    start_date=datetime(2026, 1, 1),
+    start_date=datetime(2026, 5, 31),
     catchup=False,
     max_active_runs=1,
     tags=['mlops', 'aimodel', 'mart', 'athena', 'churn'],
