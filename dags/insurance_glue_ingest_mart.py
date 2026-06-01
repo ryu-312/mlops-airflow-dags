@@ -15,7 +15,6 @@ with DAG(
     ingest_raw = GlueJobOperator(
         task_id="ingest_raw_with_glue",
         job_name="mlops-insurance-ingest",
-        aws_conn_id="aws_default",
         region_name="ap-northeast-2",
         script_args={
             "--input_path": "s3://s3-an2-mlops/landing/insurance/insurance.csv",
