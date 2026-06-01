@@ -171,7 +171,7 @@ def task_verify(**context):
 # DAG 정의
 # ============================================================
 with DAG(
-    dag_id='dag_mrkt_evnt_pred_churn_train',
+    dag_id='mrkt_evnt_pred_churn_train',
     default_args=default_args,
     description='mrkt_evnt_pred_churn_train 마트 월별 파티션 재적재',
     #schedule_interval='0 6 1 * *',   # 매월 1일 오전 6시
