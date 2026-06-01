@@ -42,9 +42,11 @@ default_args = {
 # ============================================================
 # 공통 유틸
 # ============================================================
-def get_bs_ym(execution_date):
-    """실행일 기준 당월 YYYYMM 반환 (매월 1일 실행 → 당월이 곧 적재 대상월)"""
-    return execution_date.strftime('%Y%m')
+def get_bs_ym(execution_date, context=None):
+    """BS_YM 반환 - 테스트용 하드코딩"""
+    # TODO: 운영 전환 시 아래 하드코딩 제거하고 주석 해제
+    return '202604'
+    # return execution_date.strftime('%Y%m')
 
 
 def run_athena(sql, timeout=3600):
@@ -94,7 +96,7 @@ def read_sql_from_s3():
 # ============================================================
 def task_prepare(**context):
     """BS_YM 계산 + SQL 파일 읽어서 XCom 저장"""
-    bs_ym     = get_bs_ym(context['execution_date'])
+    bs_ym     = get_bs_ym(context['execution_date'], context)
     sql_tmpl  = read_sql_from_s3()
 
     # ${bs_ym} → 실제 값으로 치환
