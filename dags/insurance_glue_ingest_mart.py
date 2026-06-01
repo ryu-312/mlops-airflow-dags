@@ -24,6 +24,9 @@ with DAG(
         },
         wait_for_completion=True,
         verbose=True,
+        get_logs=True,
+        is_delete_operator_pod=False,
+        on_finish_action="keep_pod",
     )
 
     build_mart = GlueJobOperator(
