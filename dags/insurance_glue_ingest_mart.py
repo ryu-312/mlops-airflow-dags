@@ -22,7 +22,7 @@ with DAG(
             "--run_date": "{{ ds }}",
         },
         wait_for_completion=True,
-        verbose=True,
+        verbose=False,
     )
 
     build_mart = GlueJobOperator(
@@ -36,7 +36,7 @@ with DAG(
             "--run_date": "{{ ds }}",
         },
         wait_for_completion=True,
-        verbose=True,
+        verbose=False,
     )
 
     repair_raw = AthenaOperator(
