@@ -139,7 +139,7 @@ with DAG(
         name="insurance-batch-predict",
         namespace="mlops",
     
-        image="891376975666.dkr.ecr.ap-northeast-2.amazonaws.com/insurance-inference:0.1.0",
+        image="891376975666.dkr.ecr.ap-northeast-2.amazonaws.com/insurance-inference:latest",
         cmds=["python", "batch_predict.py"],
         arguments=[
             "--input-path",
