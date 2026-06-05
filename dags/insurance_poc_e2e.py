@@ -80,7 +80,40 @@ with DAG(
         aws_conn_id="aws_default",
     )
 
-    mlflow_auth_env = [
+    # mlflow_auth_env = [
+    #     k8s.V1EnvVar(
+    #         name="MLFLOW_TRACKING_USERNAME",
+    #         value_from=k8s.V1EnvVarSource(
+    #             secret_key_ref=k8s.V1SecretKeySelector(
+    #                 name="mlflow-tracking-auth",
+    #                 key="MLFLOW_TRACKING_USERNAME",
+    #             )
+    #         ),
+    #     ),
+    #     k8s.V1EnvVar(
+    #         name="MLFLOW_TRACKING_PASSWORD",
+    #         value_from=k8s.V1EnvVarSource(
+    #             secret_key_ref=k8s.V1SecretKeySelector(
+    #                 name="mlflow-tracking-auth",
+    #                 key="MLFLOW_TRACKING_PASSWORD",
+    #             )
+    #         ),
+    #     ),
+    # ]
+
+    runtime_env_vars = [
+        k8s.V1EnvVar(
+            name="AWS_REGION",
+            value="ap-northeast-2",
+        ),
+        k8s.V1EnvVar(
+            name="AWS_DEFAULT_REGION",
+            value="ap-northeast-2",
+        ),
+        k8s.V1EnvVar(
+            name="MLFLOW_TRACKING_URI",
+            value="http://mlflow.mlflow.svc.cluster.local:80",
+        ),
         k8s.V1EnvVar(
             name="MLFLOW_TRACKING_USERNAME",
             value_from=k8s.V1EnvVarSource(
@@ -100,7 +133,7 @@ with DAG(
             ),
         ),
     ]
-
+    
     batch_predict = KubernetesPodOperator(
         task_id="batch_predict_in_b_eks",
         name="insurance-batch-predict",
@@ -117,13 +150,7 @@ with DAG(
             "models:/insurance-charges-model@champion",
         ],
     
-        env_vars={
-            "AWS_REGION": "ap-northeast-2",
-            "AWS_DEFAULT_REGION": "ap-northeast-2",
-    
-            # 이 URI는 A Airflow가 아니라 B EKS runtime pod가 사용
-            "MLFLOW_TRACKING_URI": "http://mlflow.mlflow.svc.cluster.local:80",
-        },
+        env_vars=runtime_env_vars,
     
         service_account_name="mlops-runtime",
     
