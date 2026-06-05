@@ -169,7 +169,7 @@ with DAG(
     #     get_logs=True,
     #     is_delete_operator_pod=False,
     #     on_finish_action="keep_pod",
-    )
+    # )
 
     (
         drop_feature_table
