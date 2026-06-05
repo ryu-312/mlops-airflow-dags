@@ -156,7 +156,7 @@ with DAG(
     
         in_cluster=False,
         config_file="/opt/airflow/kubeconfigs/config",
-        cluster_context="eks-airflow-test",
+        cluster_context="arn:aws:eks:ap-northeast-2:891376975666:cluster/eks-airflow-test",
     
         get_logs=True,
         is_delete_operator_pod=False,
