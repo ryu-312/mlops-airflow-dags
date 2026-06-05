@@ -101,6 +101,40 @@ with DAG(
         ),
     ]
 
+    batch_predict = KubernetesPodOperator(
+        task_id="batch_predict_in_b_eks",
+        name="insurance-batch-predict",
+        namespace="mlops",
+    
+        image="<B_ACCOUNT_ID>.dkr.ecr.ap-northeast-2.amazonaws.com/insurance-inference:0.1.0",
+        cmds=["python", "batch_predict.py"],
+        arguments=[
+            "--input-path",
+            "s3://s3-b-mlops/batch-input/insurance/run_dt={{ ds }}/input.csv",
+            "--output-path",
+            "s3://s3-b-mlops/batch-output/insurance/run_dt={{ ds }}/predictions.parquet",
+            "--model-uri",
+            "models:/insurance-charges-model@champion",
+        ],
+    
+        env_vars={
+            "AWS_REGION": "ap-northeast-2",
+            "AWS_DEFAULT_REGION": "ap-northeast-2",
+    
+            # 이 URI는 A Airflow가 아니라 B EKS runtime pod가 사용
+            "MLFLOW_TRACKING_URI": "http://mlflow.mlflow.svc.cluster.local:80",
+        },
+    
+        service_account_name="mlops-runtime",
+    
+        in_cluster=False,
+        config_file="/opt/airflow/kubeconfigs/config",
+        cluster_context="b-mlops-eks",
+    
+        get_logs=True,
+        is_delete_operator_pod=False,
+    )
+
     train_model = KubernetesPodOperator(
         task_id="train_model",
         name="insurance-train",
@@ -141,5 +175,6 @@ with DAG(
         drop_feature_table
         >> delete_feature_s3_prefix
         >> create_feature_table
-        >> train_model
+        # >> train_model
+        >> batch_predict
     )
