@@ -143,9 +143,9 @@ with DAG(
         cmds=["python", "batch_predict.py"],
         arguments=[
             "--input-path",
-            "s3://s3-b-mlops/batch-input/insurance/run_dt={{ ds }}/input.csv",
+            "s3://s3-an2-mlops/batch-input/insurance/run_dt={{ ds }}/input.csv",
             "--output-path",
-            "s3://s3-b-mlops/batch-output/insurance/run_dt={{ ds }}/predictions.parquet",
+            "s3://s3-an2-mlops/batch-output/insurance/run_dt={{ ds }}/predictions.parquet",
             "--model-uri",
             "models:/insurance-charges-model@champion",
         ],
