@@ -106,7 +106,7 @@ with DAG(
         name="insurance-batch-predict",
         namespace="mlops",
     
-        image="<B_ACCOUNT_ID>.dkr.ecr.ap-northeast-2.amazonaws.com/insurance-inference:0.1.0",
+        image="891376975666.dkr.ecr.ap-northeast-2.amazonaws.com/insurance-inference:0.1.0",
         cmds=["python", "batch_predict.py"],
         arguments=[
             "--input-path",
@@ -135,40 +135,40 @@ with DAG(
         is_delete_operator_pod=False,
     )
 
-    train_model = KubernetesPodOperator(
-        task_id="train_model",
-        name="insurance-train",
-        namespace="airflow",
-        image=TRAINING_IMAGE,
-        cmds=["python", "train.py"],
-        arguments=[
-            "--feature-table", FEATURE_TABLE,
-            "--athena-database", DATABASE,
-            "--athena-output", ATHENA_OUTPUT,
-            "--experiment-name", "insurance-poc",
-            "--registered-model-name", "insurance-charges-model",
-            "--min-r2", "0.7",
-        ],
-        env_vars={
-            "AWS_REGION": "ap-northeast-2",
-            "AWS_DEFAULT_REGION": "ap-northeast-2",
-            "MLFLOW_TRACKING_URI": "http://mlflow.mlflow.svc.cluster.local:80",
-        },
-        full_pod_spec=k8s.V1Pod(
-            spec=k8s.V1PodSpec(
-                containers=[
-                    k8s.V1Container(
-                        name="base",
-                        image=TRAINING_IMAGE,
-                        env=mlflow_auth_env,
-                    )
-                ]
-            )
-        ),
-        service_account_name="mlops-training",
-        get_logs=True,
-        is_delete_operator_pod=False,
-        on_finish_action="keep_pod",
+    # train_model = KubernetesPodOperator(
+    #     task_id="train_model",
+    #     name="insurance-train",
+    #     namespace="airflow",
+    #     image=TRAINING_IMAGE,
+    #     cmds=["python", "train.py"],
+    #     arguments=[
+    #         "--feature-table", FEATURE_TABLE,
+    #         "--athena-database", DATABASE,
+    #         "--athena-output", ATHENA_OUTPUT,
+    #         "--experiment-name", "insurance-poc",
+    #         "--registered-model-name", "insurance-charges-model",
+    #         "--min-r2", "0.7",
+    #     ],
+    #     env_vars={
+    #         "AWS_REGION": "ap-northeast-2",
+    #         "AWS_DEFAULT_REGION": "ap-northeast-2",
+    #         "MLFLOW_TRACKING_URI": "http://mlflow.mlflow.svc.cluster.local:80",
+    #     },
+    #     full_pod_spec=k8s.V1Pod(
+    #         spec=k8s.V1PodSpec(
+    #             containers=[
+    #                 k8s.V1Container(
+    #                     name="base",
+    #                     image=TRAINING_IMAGE,
+    #                     env=mlflow_auth_env,
+    #                 )
+    #             ]
+    #         )
+    #     ),
+    #     service_account_name="mlops-training",
+    #     get_logs=True,
+    #     is_delete_operator_pod=False,
+    #     on_finish_action="keep_pod",
     )
 
     (
