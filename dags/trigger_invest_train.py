@@ -61,7 +61,7 @@ def _headers() -> dict:
 @dag(
     dag_id="trigger_invest_train",
     description="invest-train 모델 일일 재학습 트리거",
-    schedule="None",                 #  
+    schedule=None,                 #  
     start_date=pendulum.datetime(2026, 6, 9, tz=KST),
     catchup=False,                        # 과거 미실행분 몰아서 실행 금지
     max_active_runs=1,                    # DAG 런 중첩 금지(학습은 단일 실행)
