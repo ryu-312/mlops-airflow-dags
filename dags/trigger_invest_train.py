@@ -15,9 +15,11 @@ DAG 는 다음 3단계로 구성한다.
         서버가 동시 학습을 409 로 차단하므로 중복 트리거는 안전.
 
 [Airflow Variables] (Admin → Variables 에서 설정, 미설정 시 기본값 사용)
-  - invest_train_base_url : 학습 서비스 base URL
-        · 클러스터 내부(권장): http://invest-train.mlops.svc.cluster.local:8080
-        · 외부(ALB)         : http://api.mlops.click
+  - invest_train_base_url : 학습 서비스 base URL (기본값: http://api.mlops.click)
+        · 외부/타클러스터 Airflow(현 구성): http://api.mlops.click   ← ALB 경유, 기본값
+        · mlops 클러스터 내부에서 실행하는 경우만: http://invest-train.mlops.svc.cluster.local:8080
+        ※ Airflow 가 mlops 와 다른 클러스터면 cluster.local 내부 DNS 가 해석되지 않으므로
+          반드시 외부 ALB URL 을 사용한다.
   - invest_train_token    : (선택) TRAIN_TOKEN 운영 시 X-Train-Token 헤더 값. 미설정이면 미전송.
 """
 
@@ -28,7 +30,7 @@ import logging
 import pendulum
 import requests
 from airflow.decorators import dag, task
-from airflow.exceptions import AirflowException, AirflowSkipException
+from airflow.exceptions import AirflowException
 from airflow.models import Variable
 from airflow.sensors.python import PythonSensor
 
@@ -43,9 +45,11 @@ HTTP_TIMEOUT_SEC = 30           # 개별 HTTP 요청 타임아웃
 
 
 def _base_url() -> str:
+    # 기본값은 외부 ALB. Airflow 가 mlops 클러스터 밖이면 내부 DNS 가 안 풀리므로
+    # ALB URL 을 사용한다. 같은 클러스터 내부 실행 시에만 Variable 로 내부 URL 지정.
     return Variable.get(
         "invest_train_base_url",
-        default_var="http://invest-train.mlops.svc.cluster.local:8080",
+        default_var="http://api.mlops.click",
     ).rstrip("/")
 
 
@@ -57,10 +61,10 @@ def _headers() -> dict:
 @dag(
     dag_id="trigger_invest_train",
     description="invest-train 모델 일일 재학습 트리거",
-    schedule=None,                # 
+    schedule="None",                 #  
     start_date=pendulum.datetime(2026, 6, 9, tz=KST),
     catchup=False,                        # 과거 미실행분 몰아서 실행 금지
-#    max_active_runs=1,                    # DAG 런 중첩 금지(학습은 단일 실행)
+    max_active_runs=1,                    # DAG 런 중첩 금지(학습은 단일 실행)
     default_args={
         "owner": "mlops",
         "retries": 0,                     # 학습 재시도는 다음 스케줄/수동 트리거로
